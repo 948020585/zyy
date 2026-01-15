@@ -126,6 +126,7 @@ namespace CertPhotoSorter
                 {
                     unmatchedNoId++;
                     var dest = Path.Combine(unmatchedDir, fileName);
+                    var nameFromFile = Path.GetFileNameWithoutExtension(fileName);
 
                     // 检查文件是否已存在，如存在则跳过
                     bool shouldCopy = true;
@@ -140,7 +141,7 @@ namespace CertPhotoSorter
                             {
                                 MatchType = Texts.MatchTypeSkipped,
                                 Cert = null,
-                                Name = null,
+                                Name = nameFromFile,
                                 Id = null,
                                 Source = src,
                                 Destination = dest
@@ -148,7 +149,6 @@ namespace CertPhotoSorter
                         }
                         else
                         {
-                            // 文件名相同但大小不同，需要重命名
                             dest = GetUniqueDestinationPath(dest);
                         }
                     }
@@ -159,7 +159,7 @@ namespace CertPhotoSorter
                         {
                             MatchType = Texts.MatchTypeNoId,
                             Cert = null,
-                            Name = null,
+                            Name = nameFromFile,
                             Id = null,
                             Source = src,
                             Destination = dest
@@ -177,6 +177,7 @@ namespace CertPhotoSorter
                 {
                     unmatchedNotInExcel++;
                     var dest = Path.Combine(unmatchedDir, fileName);
+                    var nameFromFile = Path.GetFileNameWithoutExtension(fileName);
 
                     // 检查文件是否已存在，如存在则跳过
                     bool shouldCopy = true;
@@ -191,7 +192,7 @@ namespace CertPhotoSorter
                             {
                                 MatchType = Texts.MatchTypeSkipped,
                                 Cert = null,
-                                Name = null,
+                                Name = nameFromFile,
                                 Id = id,
                                 Source = src,
                                 Destination = dest
@@ -199,7 +200,6 @@ namespace CertPhotoSorter
                         }
                         else
                         {
-                            // 文件名相同但大小不同，需要重命名
                             dest = GetUniqueDestinationPath(dest);
                         }
                     }
@@ -210,7 +210,7 @@ namespace CertPhotoSorter
                         {
                             MatchType = Texts.MatchTypeNotInExcel,
                             Cert = null,
-                            Name = null,
+                            Name = nameFromFile,
                             Id = id,
                             Source = src,
                             Destination = dest
