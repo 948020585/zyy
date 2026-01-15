@@ -13,6 +13,7 @@ namespace CertPhotoSorter
         private readonly TextBox _photoRoot = new TextBox();
         private readonly TextBox _outputRoot = new TextBox();
         private readonly ComboBox _worksheet = new ComboBox();
+        private readonly ComboBox _matchMode = new ComboBox();
         private readonly CheckBox _dryRun = new CheckBox();
         private readonly Button _runButton = new Button();
         private readonly ProgressBar _progress = new ProgressBar();
@@ -27,7 +28,7 @@ namespace CertPhotoSorter
             var layout = new TableLayoutPanel();
             layout.Dock = DockStyle.Fill;
             layout.ColumnCount = 3;
-            layout.RowCount = 7;
+            layout.RowCount = 8;
             layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140));
             layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130));
@@ -40,6 +41,12 @@ namespace CertPhotoSorter
             _worksheet.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             _worksheet.AutoCompleteSource = AutoCompleteSource.ListItems;
             ResetWorksheetCombo();
+
+            _matchMode.Dock = DockStyle.Fill;
+            _matchMode.DropDownStyle = ComboBoxStyle.DropDownList;
+            _matchMode.Items.Add(Texts.UiMatchModeIdOnly);
+            _matchMode.Items.Add(Texts.UiMatchModeNameAndId);
+            _matchMode.SelectedIndex = 0;
 
             _dryRun.Text = Texts.UiDryRun;
             _dryRun.AutoSize = true;
@@ -74,13 +81,16 @@ namespace CertPhotoSorter
             layout.Controls.Add(_worksheet, 1, 3);
             layout.Controls.Add(MakeButton(Texts.UiLoadSheets, LoadWorksheets), 2, 3);
 
-            layout.Controls.Add(_dryRun, 1, 4);
-            layout.Controls.Add(_runButton, 2, 4);
+            layout.Controls.Add(new Label { Text = Texts.UiLabelMatchMode, AutoSize = true }, 0, 4);
+            layout.Controls.Add(_matchMode, 1, 4);
 
-            layout.Controls.Add(_progress, 1, 5);
+            layout.Controls.Add(_dryRun, 1, 5);
+            layout.Controls.Add(_runButton, 2, 5);
+
+            layout.Controls.Add(_progress, 1, 6);
             layout.SetColumnSpan(_progress, 2);
 
-            layout.Controls.Add(_log, 0, 6);
+            layout.Controls.Add(_log, 0, 7);
             layout.SetColumnSpan(_log, 3);
             layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
@@ -180,7 +190,8 @@ namespace CertPhotoSorter
                 PhotoRoot = photos,
                 OutputRoot = output,
                 Worksheet = string.IsNullOrWhiteSpace(worksheet) || string.Equals(worksheet, Texts.UiAutoDetect, StringComparison.Ordinal) ? null : worksheet,
-                DryRun = _dryRun.Checked
+                DryRun = _dryRun.Checked,
+                MatchMode = _matchMode.SelectedIndex == 1 ? MatchMode.NameAndId : MatchMode.IdOnly
             };
 
             _runButton.Enabled = false;

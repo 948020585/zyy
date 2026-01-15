@@ -16,6 +16,8 @@ namespace CertPhotoSorter
         public const string MatchTypeSkipped = "\u5DF2\u8DF3\u8FC7-\u6587\u4EF6\u5DF2\u5B58\u5728";
         public const string MatchTypeNoId = "\u672A\u5339\u914D-\u65E0\u8EAB\u4EFD\u8BC1\u53F7";
         public const string MatchTypeNotInExcel = "\u672A\u5339\u914D-\u8EAB\u4EFD\u8BC1\u53F7\u4E0D\u5728Excel";
+        public const string MatchTypeNameMismatch = "\u672A\u5339\u914D-\u59D3\u540D\u4E0D\u4E00\u81F4";
+        public const string MatchTypeNoName = "\u672A\u5339\u914D-\u6587\u4EF6\u540D\u65E0\u59D3\u540D";
 
         // Excel 匹配状态列名
         public const string ColMatched = "\u662F\u5426\u5339\u914D";
@@ -40,6 +42,9 @@ namespace CertPhotoSorter
         public const string UiLabelWorksheet = "\u5DE5\u4F5C\u8868\uFF08\u53EF\u9009\uFF09\uFF1A";
         public const string UiAutoDetect = "\u81EA\u52A8\u8BC6\u522B";
         public const string UiDryRun = "DryRun\uFF08\u53EA\u751F\u6210\u62A5\u544A\uFF0C\u4E0D\u590D\u5236\uFF09";
+        public const string UiLabelMatchMode = "\u5339\u914D\u6A21\u5F0F\uFF1A";
+        public const string UiMatchModeIdOnly = "\u4EC5\u8EAB\u4EFD\u8BC1\u53F7";
+        public const string UiMatchModeNameAndId = "\u59D3\u540D+\u8EAB\u4EFD\u8BC1\u53F7";
         public const string UiChooseFile = "\u9009\u62E9\u6587\u4EF6";
         public const string UiChooseFolder = "\u9009\u62E9\u6587\u4EF6\u5939";
         public const string UiLoadSheets = "\u8BFB\u53D6\u5DE5\u4F5C\u8868";
@@ -65,6 +70,9 @@ namespace CertPhotoSorter
         public const string ReportLabelMatched = "\u5339\u914D\uFF1A";
         public const string ReportLabelUnmatchedNoId = "\u672A\u5339\u914D(\u65E0\u8EAB\u4EFD\u8BC1\u53F7)\uFF1A";
         public const string ReportLabelUnmatchedNotInExcel = "\u672A\u5339\u914D(\u8EAB\u4EFD\u8BC1\u53F7\u4E0D\u5728Excel)\uFF1A";
+        public const string ReportLabelUnmatchedNameMismatch = "\u672A\u5339\u914D(\u59D3\u540D\u4E0D\u4E00\u81F4)\uFF1A";
+        public const string ReportLabelUnmatchedNoName = "\u672A\u5339\u914D(\u6587\u4EF6\u540D\u65E0\u59D3\u540D)\uFF1A";
+        public const string ReportLabelMatchMode = "\u5339\u914D\u6A21\u5F0F\uFF1A";
         public const string ReportLabelDetails = "\u660E\u7EC6\uFF1A";
         public const string ReportLabelCertSummary = "\u8BC1\u4E66\u6C47\u603B\uFF1A";
 

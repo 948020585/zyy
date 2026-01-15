@@ -1,5 +1,16 @@
 namespace CertPhotoSorter
 {
+    /// <summary>
+    /// 匹配模式
+    /// </summary>
+    internal enum MatchMode
+    {
+        /// <summary>仅身份证号匹配</summary>
+        IdOnly = 0,
+        /// <summary>姓名+身份证号匹配</summary>
+        NameAndId = 1
+    }
+
     internal sealed class RunSettings
     {
         public string ExcelPath;
@@ -7,6 +18,7 @@ namespace CertPhotoSorter
         public string OutputRoot;
         public string Worksheet;
         public bool DryRun;
+        public MatchMode MatchMode;
     }
 
     internal sealed class RunResult
@@ -23,6 +35,8 @@ namespace CertPhotoSorter
         public int MatchedCopies;
         public int UnmatchedNoId;
         public int UnmatchedNotInExcel;
+        public int UnmatchedNameMismatch;
+        public int UnmatchedNoName;
 
         public string ReportPath;
         public string DetailsCsvPath;

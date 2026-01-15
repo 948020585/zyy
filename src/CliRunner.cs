@@ -52,6 +52,16 @@ namespace CertPhotoSorter
                     continue;
                 }
 
+                if (a.Equals("--match-mode", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
+                {
+                    var mode = args[++i];
+                    if (mode.Equals("name-id", StringComparison.OrdinalIgnoreCase) || mode.Equals("nameid", StringComparison.OrdinalIgnoreCase))
+                    {
+                        settings.MatchMode = MatchMode.NameAndId;
+                    }
+                    continue;
+                }
+
                 if (a.Equals("--log", StringComparison.OrdinalIgnoreCase) && i + 1 < args.Length)
                 {
                     logPath = args[++i];
@@ -118,7 +128,11 @@ namespace CertPhotoSorter
         private static void PrintHelp()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("  CertPhotoSorter.exe --excel <file.xls/xlsx/xlsm> --photos <photoRoot> [--out <outputRoot>] [--sheet <worksheet>] [--dry-run] [--log <logPath>]");
+            Console.WriteLine("  CertPhotoSorter.exe --excel <file.xls/xlsx/xlsm> --photos <photoRoot> [--out <outputRoot>] [--sheet <worksheet>] [--match-mode <id|name-id>] [--dry-run] [--log <logPath>]");
+            Console.WriteLine();
+            Console.WriteLine("Options:");
+            Console.WriteLine("  --match-mode id       Match by ID only (default)");
+            Console.WriteLine("  --match-mode name-id  Match by name + ID");
         }
     }
 }

@@ -109,6 +109,8 @@ namespace CertPhotoSorter
             var matchedCopies = 0;
             var unmatchedNoId = 0;
             var unmatchedNotInExcel = 0;
+            var unmatchedNameMismatch = 0;
+            var unmatchedNoName = 0;
 
             for (int i = 0; i < photoFiles.Count; i++)
             {
@@ -121,7 +123,20 @@ namespace CertPhotoSorter
                 var src = photoFiles[i];
                 var fileName = Path.GetFileName(src) ?? string.Empty;
 
-                var id = IdUtils.ExtractIdFromFileName(fileName);
+                string id;
+                string nameFromFileName = null;
+
+                if (settings.MatchMode == MatchMode.NameAndId)
+                {
+                    var pair = IdUtils.ExtractNameAndIdFromFileName(fileName);
+                    id = pair.Id;
+                    nameFromFileName = pair.Name;
+                }
+                else
+                {
+                    id = IdUtils.ExtractIdFromFileName(fileName);
+                }
+
                 if (string.IsNullOrWhiteSpace(id))
                 {
                     unmatchedNoId++;
@@ -223,6 +238,107 @@ namespace CertPhotoSorter
                     continue;
                 }
 
+                // 姓名+身份证模式：需要验证姓名
+                if (settings.MatchMode == MatchMode.NameAndId)
+                {
+                    string excelName;
+                    idToName.TryGetValue(id, out excelName);
+
+                    if (string.IsNullOrWhiteSpace(nameFromFileName))
+                    {
+                        // 文件名中没有姓名
+                        unmatchedNoName++;
+                        var dest = Path.Combine(unmatchedDir, fileName);
+                        bool shouldCopy = true;
+                        if (File.Exists(dest))
+                        {
+                            var existingInfo = new FileInfo(dest);
+                            var sourceInfo = new FileInfo(src);
+                            if (existingInfo.Length == sourceInfo.Length)
+                            {
+                                shouldCopy = false;
+                                ops.Add(new OpRow
+                                {
+                                    MatchType = Texts.MatchTypeSkipped,
+                                    Cert = null,
+                                    Name = nameFromFileName,
+                                    Id = id,
+                                    Source = src,
+                                    Destination = dest
+                                });
+                            }
+                            else
+                            {
+                                dest = GetUniqueDestinationPath(dest);
+                            }
+                        }
+                        if (shouldCopy)
+                        {
+                            ops.Add(new OpRow
+                            {
+                                MatchType = Texts.MatchTypeNoName,
+                                Cert = null,
+                                Name = nameFromFileName,
+                                Id = id,
+                                Source = src,
+                                Destination = dest
+                            });
+                            if (!settings.DryRun)
+                            {
+                                File.Copy(src, dest, true);
+                            }
+                        }
+                        continue;
+                    }
+
+                    if (!string.Equals(nameFromFileName, excelName, StringComparison.Ordinal))
+                    {
+                        // 姓名不匹配
+                        unmatchedNameMismatch++;
+                        var dest = Path.Combine(unmatchedDir, fileName);
+                        bool shouldCopy = true;
+                        if (File.Exists(dest))
+                        {
+                            var existingInfo = new FileInfo(dest);
+                            var sourceInfo = new FileInfo(src);
+                            if (existingInfo.Length == sourceInfo.Length)
+                            {
+                                shouldCopy = false;
+                                ops.Add(new OpRow
+                                {
+                                    MatchType = Texts.MatchTypeSkipped,
+                                    Cert = null,
+                                    Name = nameFromFileName,
+                                    Id = id,
+                                    Source = src,
+                                    Destination = dest
+                                });
+                            }
+                            else
+                            {
+                                dest = GetUniqueDestinationPath(dest);
+                            }
+                        }
+                        if (shouldCopy)
+                        {
+                            ops.Add(new OpRow
+                            {
+                                MatchType = Texts.MatchTypeNameMismatch,
+                                Cert = null,
+                                Name = nameFromFileName,
+                                Id = id,
+                                Source = src,
+                                Destination = dest
+                            });
+                            if (!settings.DryRun)
+                            {
+                                File.Copy(src, dest, true);
+                            }
+                        }
+                        continue;
+                    }
+                }
+
                 matchedSourceFiles++;
                 matchedUniqueIds.Add(id);
 
@@ -314,6 +430,8 @@ namespace CertPhotoSorter
                 matchedCopies,
                 unmatchedNoId,
                 unmatchedNotInExcel,
+                unmatchedNameMismatch,
+                unmatchedNoName,
                 detailsCsvPath,
                 certSummaryCsvPath);
 
@@ -353,6 +471,8 @@ namespace CertPhotoSorter
                 MatchedCopies = matchedCopies,
                 UnmatchedNoId = unmatchedNoId,
                 UnmatchedNotInExcel = unmatchedNotInExcel,
+                UnmatchedNameMismatch = unmatchedNameMismatch,
+                UnmatchedNoName = unmatchedNoName,
                 ReportPath = reportPath,
                 DetailsCsvPath = detailsCsvPath,
                 CertSummaryCsvPath = certSummaryCsvPath
@@ -496,29 +616,40 @@ namespace CertPhotoSorter
             int matchedCopies,
             int unmatchedNoId,
             int unmatchedNotInExcel,
+            int unmatchedNameMismatch,
+            int unmatchedNoName,
             string detailsCsv,
             string certSummaryCsv)
         {
-            var lines = new[]
+            var matchModeText = settings.MatchMode == MatchMode.NameAndId ? Texts.UiMatchModeNameAndId : Texts.UiMatchModeIdOnly;
+            var lines = new List<string>
             {
                 Texts.ReportLabelExcel + settings.ExcelPath,
                 Texts.ReportLabelWorksheet + sheetUsed,
                 Texts.ReportLabelProvider + providerUsed,
                 Texts.ReportLabelPhotoRoot + settings.PhotoRoot,
                 Texts.ReportLabelOutputRoot + settings.OutputRoot,
+                Texts.ReportLabelMatchMode + matchModeText,
                 Texts.ReportLabelDryRun + settings.DryRun,
                 "",
                 Texts.ReportLabelExcelCounts + excelRows + Texts.ReportExcelUniquePeoplePrefix + excelPeopleUnique,
                 Texts.ReportLabelPhotoCounts + photoFiles,
                 Texts.ReportLabelMatched + matchedSourceFiles + Texts.ReportUnitZhang + string.Format(CultureInfo.InvariantCulture, Texts.ReportMatchedTailFormat, matchedPeople, matchedCopies),
                 Texts.ReportLabelUnmatchedNoId + unmatchedNoId + Texts.ReportUnitZhang,
-                Texts.ReportLabelUnmatchedNotInExcel + unmatchedNotInExcel + Texts.ReportUnitZhang,
-                "",
-                Texts.ReportLabelDetails + detailsCsv,
-                Texts.ReportLabelCertSummary + certSummaryCsv
+                Texts.ReportLabelUnmatchedNotInExcel + unmatchedNotInExcel + Texts.ReportUnitZhang
             };
 
-            File.WriteAllLines(path, lines, new UTF8Encoding(true));
+            if (settings.MatchMode == MatchMode.NameAndId)
+            {
+                lines.Add(Texts.ReportLabelUnmatchedNameMismatch + unmatchedNameMismatch + Texts.ReportUnitZhang);
+                lines.Add(Texts.ReportLabelUnmatchedNoName + unmatchedNoName + Texts.ReportUnitZhang);
+            }
+
+            lines.Add("");
+            lines.Add(Texts.ReportLabelDetails + detailsCsv);
+            lines.Add(Texts.ReportLabelCertSummary + certSummaryCsv);
+
+            File.WriteAllLines(path, lines.ToArray(), new UTF8Encoding(true));
         }
     }
 }
