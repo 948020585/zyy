@@ -1,0 +1,14 @@
+Third-party components included in this repository/distribution:
+
+1) NPOI 2.5.6
+   - Project: https://github.com/nissl-lab/npoi
+   - License: see ./lib/LICENSE.NPOI
+
+2) SharpZipLib 1.3.3 (ICSharpCode.SharpZipLib.dll)
+   - Project: https://github.com/icsharpcode/SharpZipLib
+   - License: MIT (https://licenses.nuget.org/MIT)
+
+3) Portable.BouncyCastle 1.8.9 (BouncyCastle.Crypto.dll)
+   - Project: https://www.bouncycastle.org/csharp/
+   - License: https://www.bouncycastle.org/csharp/licence.html
+

@@ -42,6 +42,7 @@ namespace CertPhotoSorter
         public const string UiLabelWorksheet = "\u5DE5\u4F5C\u8868\uFF08\u53EF\u9009\uFF09\uFF1A";
         public const string UiAutoDetect = "\u81EA\u52A8\u8BC6\u522B";
         public const string UiDryRun = "DryRun\uFF08\u53EA\u751F\u6210\u62A5\u544A\uFF0C\u4E0D\u590D\u5236\uFF09";
+        public const string UiUpdateExcel = "\u56DE\u5199Excel\uFF08\u53EF\u9009\uFF09";
         public const string UiLabelMatchMode = "\u5339\u914D\u6A21\u5F0F\uFF1A";
         public const string UiMatchModeIdOnly = "\u4EC5\u8EAB\u4EFD\u8BC1\u53F7";
         public const string UiMatchModeNameAndId = "\u59D3\u540D+\u8EAB\u4EFD\u8BC1\u53F7";

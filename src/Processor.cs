@@ -436,7 +436,7 @@ namespace CertPhotoSorter
                 certSummaryCsvPath);
 
             // 更新原始Excel文件中的匹配状态
-            if (!settings.DryRun)
+            if (!settings.DryRun && settings.UpdateExcel)
             {
                 if (log != null) log("正在更新Excel文件...");
 

@@ -61,10 +61,12 @@ CertPhotoSorter_x64.exe --excel "报名表.xlsx" --photos "照片目录" [--out 
   5. 生成报告和 CSV 文件
 
 ### 数据访问层
-- `ExcelReader.cs`：Excel 读取，采用 **三重 Provider 回退机制**：
+- `ExcelReader.cs`：Excel 读取，采用 **OLEDB Provider + 纯托管回退机制**：
   1. `Microsoft.ACE.OLEDB.16.0`
   2. `Microsoft.ACE.OLEDB.12.0`
   3. `Microsoft.Jet.OLEDB.4.0`
+
+  若本机缺失/不可用上述 OLEDB Provider，会自动回退到内置 `NPOI` 解析（无需安装 Office/ACE/Jet）。
 
   **工作表自动识别**：优先选择包含"身份证号码"和"证书"列且名称包含"最终"或"报名"的工作表，按行数降序排列。
 

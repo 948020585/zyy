@@ -30,7 +30,17 @@ namespace CertPhotoSorter
                 }
             }
 
-            throw new InvalidOperationException("Unable to list worksheets via OLEDB. Last error: " + last, last);
+            try
+            {
+                providerUsed = "NPOI";
+                return ExcelNpoiReader.ListWorksheetNames(excelPath);
+            }
+            catch (Exception npoiEx)
+            {
+                throw new InvalidOperationException(
+                    "Unable to list worksheets via OLEDB or NPOI. OLEDB last error: " + last + "; NPOI error: " + npoiEx,
+                    npoiEx);
+            }
         }
 
         public static DataTable ReadRows(string excelPath, string worksheet, out string providerUsed, out string worksheetUsed)
@@ -68,7 +78,17 @@ namespace CertPhotoSorter
                 }
             }
 
-            throw new InvalidOperationException("Unable to read Excel via OLEDB. Last error: " + last, last);
+            try
+            {
+                providerUsed = "NPOI";
+                return ExcelNpoiReader.ReadRows(excelPath, worksheet, out worksheetUsed);
+            }
+            catch (Exception npoiEx)
+            {
+                throw new InvalidOperationException(
+                    "Unable to read Excel via OLEDB or NPOI. OLEDB last error: " + last + "; NPOI error: " + npoiEx,
+                    npoiEx);
+            }
         }
     }
 }

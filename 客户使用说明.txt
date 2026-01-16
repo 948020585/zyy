@@ -7,7 +7,8 @@
 
 2) 运行方式（推荐：双击EXE）
 - 64位电脑优先用：工具\dist\CertPhotoSorter_x64.exe
-- 如果提示“未注册 Microsoft.ACE.OLEDB.xx.0 提供程序”，请改用 x86 版或安装对应位数的 Microsoft Access Database Engine（ACE OLEDB）。
+- 本工具已内置 Excel 读取能力（不依赖 ACE/Jet OLEDB）。
+- 如需“回写Excel”（更新“是否匹配/匹配原因”两列），请勾选界面里的“回写Excel（可选）”或在命令行加 --update-excel；该功能仍依赖 OLEDB Provider（ACE/Jet），缺失时会跳过。
 
 3) 界面操作
 - 选择 Excel 文件
@@ -15,6 +16,7 @@
 - 选择 输出目录（可选；不填默认在Excel同目录生成“按证书分类”）
 - 工作表（可选；不填自动识别含“身份证号码/证书”的表）
 - 勾选 DryRun：只生成报告，不复制照片
+- 如需回写Excel：勾选“回写Excel（可选）”（默认不勾选）
 - 点击“开始执行”
 
 4) 输出结果
@@ -25,3 +27,4 @@
 
 5) 命令行（可选）
 CertPhotoSorter_x64.exe --excel "报名.xls" --photos "学员报名统计" --out "按证书分类" --sheet "工作表名" --dry-run
+CertPhotoSorter_x64.exe --excel "报名.xls" --photos "学员报名统计" --out "按证书分类" --update-excel

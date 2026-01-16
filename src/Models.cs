@@ -18,6 +18,7 @@ namespace CertPhotoSorter
         public string OutputRoot;
         public string Worksheet;
         public bool DryRun;
+        public bool UpdateExcel;
         public MatchMode MatchMode;
     }
 
